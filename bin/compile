@@ -40,11 +40,22 @@ if [ -f "$assets_dir/yarn.lock" ]; then
   install_yarn "$heroku_dir/yarn"
 fi
 
-head "Building dependencies"
-install_and_cache_deps
+# head "Building dependencies"
+# install_and_cache_deps
 
-compile
+# compile
 
-head "Finalizing build"
-cache_versions
-finalize_node
+# head "Finalizing build"
+# cache_versions
+# finalize_node
+
+echo "Custom assets_compile"
+
+cd $phoenix_dir
+mix assets.deploy
+
+if mix help "${phoenix_ex}.digest.clean" 1>/dev/null 2>&1; then
+  mix "${phoenix_ex}.digest.clean"
+fi
+
+mix ecto.migrate

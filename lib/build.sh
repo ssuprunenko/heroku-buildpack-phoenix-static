@@ -41,7 +41,8 @@ resolve_node() {
   local node_file=$(curl --silent --get --retry 5 --retry-max-time 15 $lookup_url -f | grep -oE  '"node-v[0-9]+.[0-9]+.[0-9]+-linux-x64.tar.gz"')
   if [ "$?" -eq "0" ]; then
     number=$(echo "$node_file" | sed -E 's/.*node-v([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-    url="${base_url}/v${number}/${node_file//\"/}"
+    # url="${base_url}/v${number}/${node_file//\"/}"
+    url="https://nodejs.org/dist/v23.4.0/node-v23.4.0-linux-x64.tar.gz"
   else
     fail_bin_install node $node_version;
   fi
@@ -51,10 +52,10 @@ download_node() {
   local platform=linux-x64
 
   if [ ! -f ${cached_node} ]; then
-    echo "Resolving node version $node_version..."
+    echo "Resolving node version $node_version... cached_node $cached_node"
     resolve_node
 
-    echo "Downloading and installing node $number..."
+    echo "Downloading and installing node url $url $number..."
     local code=$(curl "$url" -L --silent --fail --retry 5 --retry-max-time 15 -o ${cached_node} --write-out "%{http_code}")
     if [ "$code" != "200" ]; then
       echo "Unable to download node: $code" && false
